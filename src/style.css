@@ -286,3 +286,9 @@ body.intro #desktop-controls,body.cine #desktop-controls{display:none!important}
   #desktop-controls{display:none!important}
   body.playing #pad{display:flex!important}
 }
+
+/* ── Creator Badge & Link ── */
+.creator-badge{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:6px;font:600 13px var(--t);color:#c8d4e8;letter-spacing:.03em}
+.creator-badge b{color:#fff;font-family:var(--h);font-weight:800;letter-spacing:.06em;text-shadow:0 0 10px rgba(40,224,255,.6)}
+.creator-link{display:inline-flex;align-items:center;padding:3px 10px;background:linear-gradient(90deg,rgba(40,224,255,.2),rgba(255,200,58,.2));border:1px solid rgba(40,224,255,.5);border-radius:999px;color:var(--c);font:700 11.5px var(--h);letter-spacing:.08em;text-decoration:none;transition:all .15s ease;box-shadow:0 0 10px rgba(40,224,255,.25)}
+.creator-link:hover{background:linear-gradient(90deg,rgba(40,224,255,.4),rgba(255,200,58,.4));border-color:#fff;color:#fff;box-shadow:0 0 16px rgba(40,224,255,.6);transform:translateY(-1px)}
