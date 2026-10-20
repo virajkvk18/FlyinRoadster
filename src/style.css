@@ -287,8 +287,96 @@ body.intro #desktop-controls,body.cine #desktop-controls{display:none!important}
   body.playing #pad{display:flex!important}
 }
 
-/* ── Creator Badge & Link ── */
-.creator-badge{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:6px;font:600 13px var(--t);color:#c8d4e8;letter-spacing:.03em}
-.creator-badge b{color:#fff;font-family:var(--h);font-weight:800;letter-spacing:.06em;text-shadow:0 0 10px rgba(40,224,255,.6)}
-.creator-link{display:inline-flex;align-items:center;padding:3px 10px;background:linear-gradient(90deg,rgba(40,224,255,.2),rgba(255,200,58,.2));border:1px solid rgba(40,224,255,.5);border-radius:999px;color:var(--c);font:700 11.5px var(--h);letter-spacing:.08em;text-decoration:none;transition:all .15s ease;box-shadow:0 0 10px rgba(40,224,255,.25)}
-.creator-link:hover{background:linear-gradient(90deg,rgba(40,224,255,.4),rgba(255,200,58,.4));border-color:#fff;color:#fff;box-shadow:0 0 16px rgba(40,224,255,.6);transform:translateY(-1px)}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   🚀 MODERN LANDING PAGE, HYPERDRIVE BUTTONS & AMBIENT ANIMATIONS
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Ambient Background FX in Title ── */
+.title-bg-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.aurora-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.38;mix-blend-mode:screen;pointer-events:none;will-change:transform}
+.aurora-orb-1{width:380px;height:380px;top:5%;left:10%;background:radial-gradient(circle,#00f0ff 0%,rgba(0,240,255,0) 70%);animation:floatOrb1 14s ease-in-out infinite alternate}
+.aurora-orb-2{width:420px;height:420px;bottom:10%;right:12%;background:radial-gradient(circle,#7928ca 0%,rgba(121,40,202,0) 70%);animation:floatOrb2 16s ease-in-out infinite alternate}
+.aurora-orb-3{width:300px;height:300px;top:40%;left:45%;background:radial-gradient(circle,#ff007a 0%,rgba(255,0,122,0) 70%);animation:floatOrb3 18s ease-in-out infinite alternate}
+
+@keyframes floatOrb1{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.15)}100%{transform:translate(-40px,70px) scale(.9)}}
+@keyframes floatOrb2{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,-40px) scale(1.2)}100%{transform:translate(40px,-60px) scale(.95)}}
+@keyframes floatOrb3{0%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-30px) scale(1.1)}100%{transform:translate(-30px,40px) scale(.9)}}
+
+.speed-lines{position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 30px 40px,#00f0ff,transparent),radial-gradient(1.8px 1.8px at 140px 180px,#ffca3a,transparent),radial-gradient(1.2px 1.2px at 280px 90px,#fff,transparent),radial-gradient(2px 2px at 420px 260px,#7928ca,transparent),radial-gradient(1.5px 1.5px at 580px 140px,#00f0ff,transparent);background-repeat:repeat;background-size:620px 380px;opacity:.42;animation:starDrift 30s linear infinite}
+@keyframes starDrift{from{background-position:0 0}to{background-position:620px 380px}}
+
+.title-cyber-grid{position:absolute;bottom:0;left:0;right:0;height:36vh;background:linear-gradient(180deg,transparent 0%,rgba(0,240,255,.04) 40%,rgba(0,240,255,.1) 100%),repeating-linear-gradient(90deg,rgba(0,240,255,.07) 0px,rgba(0,240,255,.07) 1px,transparent 1px,transparent 48px);mask-image:linear-gradient(to top,black 20%,transparent 100%);-webkit-mask-image:linear-gradient(to top,black 20%,transparent 100%);opacity:.65;pointer-events:none}
+
+/* ── Title & Logo Enhancement ── */
+#title{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;align-items:center;z-index:5;padding:calc(env(safe-area-inset-top) + 20px) 18px calc(env(safe-area-inset-bottom) + 20px);background:linear-gradient(180deg,rgba(5,7,16,.85) 0%,rgba(5,7,16,.1) 32%,rgba(5,7,16,.1) 50%,rgba(5,7,16,.92) 100%)}
+.logo{position:relative;z-index:2;text-align:center;margin-top:3.5vh}
+.logo-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;margin-bottom:10px;border-radius:999px;background:rgba(0,240,255,.12);border:1px solid rgba(0,240,255,.4);box-shadow:0 0 16px rgba(0,240,255,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:tagPulse 3s ease-in-out infinite alternate}
+.logo-pill span{font:800 10.5px var(--h);letter-spacing:.22em;color:#00f0ff;text-shadow:0 0 10px rgba(0,240,255,.6)}
+@keyframes tagPulse{0%{box-shadow:0 0 12px rgba(0,240,255,.2);border-color:rgba(0,240,255,.35)}100%{box-shadow:0 0 22px rgba(0,240,255,.45);border-color:rgba(0,240,255,.75)}}
+
+.logo h1{font:900 italic clamp(38px,11.5vw,66px) var(--h);line-height:.96;letter-spacing:-.01em}
+.logo h1 b{font-weight:900;background:linear-gradient(180deg,#ffffff 15%,#b2f5ea 48%,#00f0ff 80%,#0062ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(0,240,255,.65));animation:titleGlow 4s ease-in-out infinite alternate}
+@keyframes titleGlow{0%{filter:drop-shadow(0 0 14px rgba(0,240,255,.5))}100%{filter:drop-shadow(0 0 26px rgba(0,240,255,.85))}}
+.logo p{margin-top:12px;font:600 16px var(--t);letter-spacing:.04em;color:#e2ecf8;text-shadow:0 2px 8px rgba(0,0,0,.85)}
+.logo .m{color:#ff7a4a;font-weight:700;text-shadow:0 0 10px rgba(255,100,40,.8)}
+.tbottom{position:relative;z-index:2;width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
+
+/* ── Mission Mode Selector Redesign ── */
+.mode-select{width:100%;margin:2px 0 8px;padding:12px 14px;background:rgba(10,14,30,.68);border:1px solid rgba(0,240,255,.22);border-radius:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 0 20px rgba(0,240,255,.05)}
+.mode-label{font:800 11px var(--h);letter-spacing:.24em;color:#00f0ff;text-align:center;margin-bottom:9px;text-shadow:0 0 10px rgba(0,240,255,.6)}
+.mode-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media (max-width:640px){.mode-grid{grid-template-columns:repeat(3,1fr)}}
+.mode-card{padding:10px 6px;background:rgba(18,25,50,.7);border:1px solid rgba(255,255,255,.12);border-radius:12px;clip-path:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .2s cubic-bezier(.2,1,.3,1)}
+.mode-card:hover{background:rgba(28,42,86,.85);border-color:rgba(0,240,255,.55);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.mode-card.on{background:linear-gradient(150deg,rgba(0,240,255,.24) 0%,rgba(121,40,202,.38) 100%);border:1px solid #00f0ff;box-shadow:0 0 20px rgba(0,240,255,.42),inset 0 0 10px rgba(0,240,255,.2);transform:translateY(-2px)}
+.mode-card .mc-icon{font-size:20px;line-height:1;transition:transform .2s ease}
+.mode-card:hover .mc-icon{transform:scale(1.2)}
+.mode-card .mc-info b{font:800 11px var(--h);letter-spacing:.06em;color:#e8f2fc;white-space:nowrap}
+.mode-card.on .mc-info b{color:#fff;text-shadow:0 0 10px #00f0ff}
+
+.stepper-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;padding:7px 16px;background:rgba(255,190,40,.14);border:1px solid rgba(255,190,40,.45);border-radius:10px;clip-path:none;font:700 12px var(--h);color:#ffca3a}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:28px;height:28px;background:rgba(255,190,40,.24);border:1px solid #ffca3a;color:#fff;border-radius:6px;clip-path:none;font:900 15px var(--h);display:grid;place-items:center;transition:transform .1s}
+.stepper button:active{transform:scale(.92)}
+.stepper b{font:900 16px var(--h);min-width:24px;text-align:center;color:#fff;text-shadow:0 0 8px rgba(255,200,60,.7)}
+
+/* ── Primary Launch Engine Button (CTA) ── */
+.cta{position:relative;width:100%;padding:17px 0;border-radius:16px;clip-path:none;border:1px solid rgba(255,255,255,.35);font:900 20px var(--h);letter-spacing:.16em;color:#fff;
+  background:linear-gradient(135deg,#00f0ff 0%,#0066ff 38%,#7928ca 72%,#ff007a 100%);
+  background-size:260% 260%;
+  animation:hyperGrad 6s ease infinite alternate;
+  box-shadow:0 0 28px rgba(0,240,255,.45),0 10px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5);
+  overflow:hidden;cursor:pointer;transition:all .22s cubic-bezier(.2,1,.3,1)}
+@keyframes hyperGrad{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+.cta::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 60%);pointer-events:none}
+.cta::after{content:'';position:absolute;top:0;bottom:0;width:35%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);animation:shine 2.8s ease-in-out infinite;pointer-events:none}
+.cta-inner{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;pointer-events:none}
+.cta-icon{font-size:22px;line-height:1;filter:drop-shadow(0 0 8px rgba(255,255,255,.8))}
+.cta-text{font:900 19px var(--h);letter-spacing:.16em;text-shadow:0 2px 6px rgba(0,0,0,.7)}
+.cta-arrow{font-size:20px;transition:transform .22s cubic-bezier(.2,1,.3,1);color:#fff}
+.cta:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 0 38px rgba(0,240,255,.7),0 14px 40px rgba(121,40,202,.45),inset 0 1px 0 #fff;border-color:#fff}
+.cta:hover .cta-arrow{transform:translateX(6px)}
+.cta:active{transform:translateY(1px) scale(.985);filter:brightness(1.18)}
+
+/* ── Secondary Navigation Buttons (RANKING, HOW TO) ── */
+.row2{display:flex;gap:10px;width:100%}
+.ghost{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 0;border-radius:999px;clip-path:none;font:800 13px var(--h);letter-spacing:.14em;color:#e8f4ff;
+  background:linear-gradient(145deg,rgba(22,32,64,.8),rgba(12,16,36,.88));border:1px solid rgba(0,240,255,.32);box-shadow:0 4px 16px rgba(0,0,0,.35),inset 0 0 10px rgba(0,240,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .2s cubic-bezier(.2,1,.3,1)}
+.ghost svg{color:#00f0ff;filter:drop-shadow(0 0 6px rgba(0,240,255,.5))}
+.ghost:hover{background:linear-gradient(145deg,rgba(34,50,98,.9),rgba(16,24,52,.95));border-color:rgba(0,240,255,.75);box-shadow:0 0 20px rgba(0,240,255,.4);transform:translateY(-2px);color:#fff}
+.ghost:active{transform:scale(.98);filter:brightness(1.2)}
+.ghost.share{background:linear-gradient(145deg,#00a2ff,#0055d4);box-shadow:0 0 20px rgba(0,162,255,.5);border-radius:999px;border:1px solid rgba(255,255,255,.4)}
+
+/* ── Gift / Free Car Skins Button ── */
+.giftlink{display:block;margin:2px auto 4px;padding:7px 18px;font:800 12.5px var(--h);letter-spacing:.08em;color:#ffca3a;background:linear-gradient(90deg,rgba(255,183,3,.16),rgba(255,107,53,.16));border:1px solid rgba(255,183,3,.45);border-radius:999px;box-shadow:0 0 14px rgba(255,183,3,.2);transition:all .2s ease}
+.giftlink:hover{background:linear-gradient(90deg,rgba(255,183,3,.3),rgba(255,107,53,.3));border-color:#ffe066;color:#fff;box-shadow:0 0 22px rgba(255,183,3,.45);transform:translateY(-1px)}
+
+/* ── Creator Badge & Interactive Portfolio Link ── */
+.creator-badge{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:6px;padding:8px 18px;background:linear-gradient(135deg,rgba(14,20,44,.8),rgba(8,12,28,.88));border:1px solid rgba(0,240,255,.28);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.4),inset 0 0 14px rgba(0,240,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.creator-label{font:700 11px var(--h);letter-spacing:.14em;color:#8fa0c0;text-transform:uppercase}
+.creator-name{font:800 14px var(--h);letter-spacing:.06em;background:linear-gradient(90deg,#ffffff 20%,#00f0ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 12px rgba(0,240,255,.4)}
+.creator-link{display:inline-flex;align-items:center;padding:4px 14px;background:linear-gradient(90deg,rgba(0,240,255,.24),rgba(121,40,202,.34));border:1px solid rgba(0,240,255,.65);border-radius:999px;color:#00f0ff;font:800 11.5px var(--h);letter-spacing:.08em;text-decoration:none;transition:all .2s ease;box-shadow:0 0 14px rgba(0,240,255,.3)}
+.creator-link:hover{background:linear-gradient(90deg,rgba(0,240,255,.45),rgba(121,40,202,.55));border-color:#fff;color:#fff;box-shadow:0 0 22px rgba(0,240,255,.7);transform:translateY(-1px)}
+.ver{font:600 11.5px var(--h);color:#70809e;letter-spacing:.08em;margin-top:2px}

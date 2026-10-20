@@ -5,6 +5,8 @@
 [![Vite](https://img.shields.io/badge/Vite-7.1-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Tests](https://img.shields.io/badge/Tests-8%20Passed-brightgreen?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Creator](https://img.shields.io/badge/Creator-Viraj%20Vishwakarma-00f0ff?style=for-the-badge&logo=vercel)](https://viraj-pi.vercel.app/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-viraj--pi.vercel.app-ff007a?style=for-the-badge&logo=googlechrome)](https://viraj-pi.vercel.app/)
 
 > **Flyin Roadster** is a high-performance 3D web driving and flight simulator inspired by the next-generation **Tesla Roadster** equipped with the rumored **SpaceX Cold-Gas Thruster Package**. Launch off vertical ramps, fire composite pressure thrusters to soar over multi-lane highway traffic, bounce across car roofs, collect golden Elon heads, and race to **Mars** in a cinematic interplanetary blastoff.
 
@@ -154,6 +156,18 @@ FlyinRoadster/
 ```
 
 ---
+
+---
+
+## 👨‍💻 Creator & Developer
+
+**Flyin Roadster** was conceptualized, designed, and developed by **Viraj Vishwakarma**.
+
+- **🌐 Portfolio**: [https://viraj-pi.vercel.app/](https://viraj-pi.vercel.app/)
+- **🐙 GitHub**: [@virajkvk18](https://github.com/virajkvk18)
+- **🚀 Project Repository**: [virajkvk18/FlyinRoadster](https://github.com/virajkvk18/FlyinRoadster)
+
+Explore more interactive WebGL/Three.js web experiences, real-time simulations, and creative engineering projects at [Viraj Vishwakarma's Portfolio](https://viraj-pi.vercel.app/).
 
 ## 📜 Legal & Attribution
 
