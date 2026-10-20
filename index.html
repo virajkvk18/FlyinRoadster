@@ -1,2 +1,220 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="theme-color" content="#020305"><meta name="description" content="Three driving experiments. Race from 0 to 60, land a cold-gas kickflip, and launch across the void in Flyin Roadster."><title>Flyin Roadster | The 0-60. The Kickflip. The Ramp.</title></head><body><div id="app"></div><script type="module" src="/src/main.js"></script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Fly, Roadster! 🚀 Tesla Roadster Flying Car to Mars</title>
+<meta name="description" content="Fan-made 3D game inspired by the new Tesla Roadster: fly over traffic jams with SpaceX cold-gas thrusters, eat 5 Elon Musk heads and race to Mars. Free browser game.">
+<meta name="theme-color" content="#05060c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fly, Roadster!">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+  <div id="vig"></div>
+  <div id="pops"></div>
+  <div id="hud">
+    <div class="gauge left">
+      <svg viewBox="0 0 100 100">
+        <path class="bg" d="M 18.9 81.1 A 44 44 0 1 1 81.1 81.1"/>
+        <path id="garc" class="val" d="M 18.9 81.1 A 44 44 0 1 1 81.1 81.1"/>
+      </svg>
+      <div class="gl">G-FORCE</div>
+      <div class="gn" id="gnum">1.0</div>
+      <div class="gu">G</div>
+      <div class="gico">
+        <svg id="gicon" viewBox="0 0 40 20">
+          <path d="M2 14 L8 12 L14 7 L26 6 L36 11 L38 14 Z" fill="#e8ecf2"/>
+          <circle cx="10" cy="15" r="3" fill="#111" stroke="#bbb"/>
+          <circle cx="31" cy="15" r="3" fill="#111" stroke="#bbb"/>
+        </svg>
+      </div>
+    </div>
+    <div id="center">
+      <div id="prog">
+        <div id="progf"></div>
+        <div id="progcar"></div>
+        <div id="progmars"></div>
+      </div>
+      <div class="dl"><span id="dist">0.00</span><small>S</small></div>
+      <div id="bestline"></div>
+      <div id="coins"></div>
+      <div id="spd">0 km/h</div>
+      <div id="wanted"></div>
+    </div>
+    <div class="gauge right">
+      <svg viewBox="0 0 100 100">
+        <path class="bg" d="M 18.9 81.1 A 44 44 0 1 1 81.1 81.1"/>
+        <path id="aarc" class="val" d="M 18.9 81.1 A 44 44 0 1 1 81.1 81.1"/>
+      </svg>
+      <div class="gl">ALTITUDE</div>
+      <div class="gn" id="anum">0.0</div>
+      <div class="gu">M</div>
+      <div class="gico">
+        <svg id="aicon" viewBox="0 0 40 20">
+          <path d="M6 15 L8 8 L14 5 L26 5 L32 8 L34 15 Z" fill="#e8ecf2"/>
+          <rect x="7" y="13" width="26" height="2" fill="#ff3a2a"/>
+        </svg>
+      </div>
+    </div>
+    <div id="topbtns">
+      <button id="b-cam" aria-label="camera">
+        <svg viewBox="0 0 24 24"><path d="M4 7h3l2-2h6l2 2h3v12H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <button id="b-snd" aria-label="sound">
+        <svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w" d="M16 8c2 2 2 6 0 8M18.5 5.5c3.5 3.5 3.5 9.5 0 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button id="b-pause" aria-label="pause">
+        <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div id="warn"></div>
+    <div id="bannerbox" class="hide">
+      <div id="banner"></div>
+      <div id="bsub"></div>
+    </div>
+    <div id="hint"></div>
+    <div id="dwl" class="dw">!</div>
+    <div id="dwr" class="dw">!</div>
+  </div>
+  <div id="pad">
+    <button data-k="left" class="pb side" aria-label="left">
+      <svg viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button data-k="jet" class="pb jet" aria-label="fly">
+      <div id="tank"></div>
+      <svg viewBox="0 0 24 24"><path d="M12 2c3 3 4.5 6.5 4.5 10.5L14 15h-4l-2.5-2.5C7.5 8.5 9 5 12 2z" fill="currentColor"/><circle cx="12" cy="9" r="1.8" fill="#0a2a3a"/><path d="M10 16.5c0 2.5 1 4 2 5.5 1-1.5 2-3 2-5.5z" fill="#ffb040"/></svg>
+      <em>FLY</em>
+    </button>
+    <button data-k="right" class="pb side" aria-label="right">
+      <svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div id="skip" class="hide">TAP TO SKIP</div>
+  <div id="flash"></div>
+  <div id="bonk"><img id="bonkimg" alt=""><b>BONK!</b></div>
+  <div id="fps"></div>
+
+  <div id="title" class="ov">
+    <div class="logo">
+      <small>A FAN-MADE 3D DRIVING GAME</small>
+      <h1>FLY,<br><b>ROADSTER!</b></h1>
+      <p>Eat <i class="ec"></i> 5 Elon heads &amp; reach <span class="m">MARS</span> fastest</p>
+    </div>
+    <div class="tbottom">
+      <div id="chal" class="hide"></div>
+      <div id="t-best"></div>
+      <button id="b-start" class="cta"><span>START ENGINE</span></button>
+      <div class="row2">
+        <button id="b-rank" class="ghost">
+          <svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0zM5 5H3v2a4 4 0 0 0 4 4M19 5h2v2a4 4 0 0 1-4 4M10 14h4v3h3v3H7v-3h3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          RANKING
+        </button>
+        <button id="b-how" class="ghost">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5V14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg>
+          HOW TO
+        </button>
+      </div>
+      <button id="b-gift-t" class="giftlink">🎁 FREE CAR SKINS · invite friends</button>
+      <p class="fan">Fan game · not affiliated with Tesla, SpaceX or Elon Musk</p>
+      <p class="ver"><span id="t-ver">v1.8.1</span> · <button id="b-patch">Patch notes</button></p>
+    </div>
+  </div>
+
+  <div id="how" class="panel hide">
+    <h3>HOW TO PLAY</h3>
+    <ul id="howlist"></ul>
+    <section id="about">
+      <h2>Fly, Roadster! — a free Tesla Roadster flying car game (fan-made)</h2>
+      <p>Inspired by the new Tesla Roadster reveal and its SpaceX-style cold-gas thrusters, Fly, Roadster! lets you drive a flying Roadster in your browser. Launch off a giant vertical ramp, spin through the air and land on a neon city road. The car accelerates by itself: change lanes, fire the air thrusters to fly over traffic jams, bounce across car roofs and send traffic flying.</p>
+      <p>Eat at least 5 giant Elon Musk heads — each one gives you a turbo boost — then hit the Mars launch pad at 3 km to blast off to Mars and land in the Musk Empire. Miss them and you fall back to Earth.</p>
+    </section>
+    <button id="b-howclose" class="ghost">GOT IT</button>
+  </div>
+
+  <div id="giftp" class="panel hide">
+    <h3>🎁 FREE CAR SKINS</h3>
+    <p class="gtx">Send your link. Every friend who plays from it unlocks a new skin for you.</p>
+    <div class="glink"><input id="gift-link" readonly><button id="b-gcopy">COPY</button></div>
+    <button id="b-gshare" class="ghost">SHARE LINK</button>
+    <div id="gift-n"></div><div class="gpv"><canvas id="gift-pv"></canvas><span id="gift-pvn"></span></div><div id="gift-skins"></div>
+    <button id="b-giftclose" class="ghost">CLOSE</button>
+  </div>
+
+  <div id="patch" class="panel hide">
+    <h3>PATCH NOTES</h3>
+    <div id="patch-list"></div>
+    <button id="b-patchclose" class="ghost">CLOSE</button>
+  </div>
+
+  <div id="endsp" class="panel hide">
+    <h3>🏆 ENDINGS</h3>
+    <div id="ends-sum"></div>
+    <div id="ends-list"></div>
+    <button id="b-endsclose" class="ghost">CLOSE</button>
+  </div>
+
+  <div id="rank" class="panel hide">
+    <h3>🚀 FASTEST TO MARS</h3>
+    <div class="tabs">
+      <button id="tab-all" class="on">ALL-TIME</button>
+      <button id="tab-day">TODAY</button>
+    </div>
+    <div id="rank-list"></div>
+    <div id="rank-me"></div>
+    <button id="b-rankclose" class="ghost">CLOSE</button>
+  </div>
+
+  <div id="result" class="ov hide">
+    <div id="r-why"></div>
+    <div class="rd"><span id="r-dist">0</span><small id="r-unit">m</small></div>
+    <div id="r-best"></div>
+    <div id="r-chal" class="hide"></div>
+    <div id="r-rank"></div>
+    <div id="r-stats"></div>
+    <div class="saved">✓ Saved to ranking · Change your name:</div>
+    <div class="namebox">
+      <input id="r-name" maxlength="10" autocomplete="off" spellcheck="false" placeholder="Your name">
+      <button id="b-namesave">RENAME</button>
+    </div>
+    <div class="again">
+      <button id="b-again" class="cta"><span>DRIVE AGAIN</span></button>
+      <button id="b-ends" class="trophy" aria-label="Endings">
+        <svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M10 14h4v3h2.5v3h-9v-3H10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <b id="ends-n">0/12</b><i id="ends-new">NEW</i>
+      </button>
+    </div>
+    <div class="row2">
+      <button id="b-share" class="ghost share">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="b-share-t">SHARE (GIFT)</span>
+      </button>
+      <button id="b-rank2" class="ghost">
+        <svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0zM10 14h4v3h3v3H7v-3h3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        RANKING
+      </button>
+    </div>
+    <button id="b-menu" class="link">MAIN MENU</button>
+  </div>
+
+  <div id="pausebox" class="ov hide">
+    <h2>PAUSED</h2>
+    <button id="b-resume" class="cta"><span>RESUME</span></button>
+    <button id="b-quit" class="link">MAIN MENU</button>
+  </div>
+  <div id="cc-tip" class="hide"></div>
+  <div id="toast" class="hide"></div>
+</div>
+<div id="rotate"><div>📱↻</div><p>Please rotate to portrait</p></div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
