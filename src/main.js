@@ -1,5 +1,9 @@
 import './style.css';
+import { inject } from '@vercel/analytics';
 import { initMockApi } from './mockApi.js';
+
+// Initialize Vercel Web Analytics
+inject();
 
 // Initialize mock API for rankings, settings, and player profile persistence
 initMockApi();
