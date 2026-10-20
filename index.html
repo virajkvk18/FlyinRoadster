@@ -165,37 +165,51 @@
       <div id="chal" class="hide"></div>
       <div id="t-best"></div>
       
-      <!-- Unique Mode Selector -->
+      <!-- Planetary Campaign & Stunt Mode Selector -->
       <div class="mode-select">
-        <div class="mode-label">SELECT MISSION MODE</div>
-        <div class="mode-grid">
-          <button class="mode-card on" data-mode="mars" type="button">
-            <div class="mc-icon">🚀</div>
-            <div class="mc-info"><b>MARS</b></div>
-          </button>
-          <button class="mode-card" data-mode="megaramp" type="button">
-            <div class="mc-icon">🛹</div>
-            <div class="mc-info"><b>RAMP</b></div>
-          </button>
-          <button class="mode-card" data-mode="carjump" type="button">
-            <div class="mc-icon">🚗</div>
-            <div class="mc-info"><b>CAR JUMP</b></div>
-          </button>
-          <button class="mode-card" data-mode="free" type="button">
-            <div class="mc-icon">🌐</div>
-            <div class="mc-info"><b>FREE ROAM</b></div>
-          </button>
-          <button class="mode-card" data-mode="sprint" type="button">
-            <div class="mc-icon">⚡</div>
-            <div class="mc-info"><b>0–60</b></div>
-          </button>
+        <div class="mission-tabs">
+          <button class="tab-btn on" id="tab-campaign" type="button">🪐 PLANETARY CAMPAIGN</button>
+          <button class="tab-btn" id="tab-stunt" type="button">🛹 STUNT LAB</button>
         </div>
-        <div id="car-jump-stepper" class="stepper-row hide">
-          <span>PARKED CARS:</span>
-          <div class="stepper">
-            <button id="b-car-minus" type="button">−</button>
-            <b id="car-count-num">5</b>
-            <button id="b-car-plus" type="button">+</button>
+
+        <!-- Level Selector for Planetary Campaign -->
+        <div id="campaign-view" class="campaign-view">
+          <div class="level-header">
+            <span class="lh-tag">INTERPLANETARY JOURNEY</span>
+            <span class="lh-prog" id="campaign-prog-text">UNLOCK LEVEL BY LEVEL</span>
+          </div>
+          <div class="level-grid" id="level-grid">
+            <!-- Dynamically populated from levels.js -->
+          </div>
+        </div>
+
+        <!-- Stunt Lab Modes (Bonus Sandbox) -->
+        <div id="stunt-view" class="stunt-view hide">
+          <div class="mode-grid">
+            <button class="mode-card" data-mode="megaramp" type="button">
+              <div class="mc-icon">🛹</div>
+              <div class="mc-info"><b>RAMP</b></div>
+            </button>
+            <button class="mode-card" data-mode="carjump" type="button">
+              <div class="mc-icon">🚗</div>
+              <div class="mc-info"><b>CAR JUMP</b></div>
+            </button>
+            <button class="mode-card" data-mode="free" type="button">
+              <div class="mc-icon">🌐</div>
+              <div class="mc-info"><b>FREE ROAM</b></div>
+            </button>
+            <button class="mode-card" data-mode="sprint" type="button">
+              <div class="mc-icon">⚡</div>
+              <div class="mc-info"><b>0–60</b></div>
+            </button>
+          </div>
+          <div id="car-jump-stepper" class="stepper-row hide">
+            <span>PARKED CARS:</span>
+            <div class="stepper">
+              <button id="b-car-minus" type="button">−</button>
+              <b id="car-count-num">5</b>
+              <button id="b-car-plus" type="button">+</button>
+            </div>
           </div>
         </div>
       </div>
@@ -286,8 +300,13 @@
       <input id="r-name" maxlength="10" autocomplete="off" spellcheck="false" placeholder="Your name">
       <button id="b-namesave">RENAME</button>
     </div>
+    <div id="res-next-box" class="res-next-box hide">
+      <button id="b-next-lvl" class="cta glow-cta" type="button">
+        <span id="b-next-lvl-text">NEXT MISSION ➔</span>
+      </button>
+    </div>
     <div class="again">
-      <button id="b-again" class="cta"><span>DRIVE AGAIN</span></button>
+      <button id="b-again" class="cta"><span>RETRY MISSION</span></button>
       <button id="b-ends" class="trophy" aria-label="Endings">
         <svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M10 14h4v3h2.5v3h-9v-3H10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
         <b id="ends-n">0/12</b><i id="ends-new">NEW</i>
