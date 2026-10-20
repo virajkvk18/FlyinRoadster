@@ -36,15 +36,3 @@ export class DriveAudio {
   }
 }
 
-export const courses = [
-  { name: '01 / THE MEGA GAP', gap: 65, rise: 23.4, curve: .0065, description: '65 m gap / balanced launch' },
-  { name: '02 / ORBITAL', gap: 95, rise: 36, curve: .01, description: '95 m gap / high altitude' },
-  { name: '03 / PRECISION', gap: 45, rise: 18, curve: .005, description: '45 m gap / narrow receiver', width: 12 },
-];
-
-export function installExperience() {
-  document.querySelector('.select-label').insertAdjacentHTML('beforebegin', `<label class="select-label" for="course-select">CHOOSE TEST FACILITY</label><select id="course-select">${courses.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('')}</select>`);
-  document.querySelector('.top-actions').insertAdjacentHTML('afterbegin', '<button class="small" id="sound">SOUND ON</button><button class="small" id="quality">FX HIGH</button>');
-  document.querySelector('#ui').insertAdjacentHTML('beforeend', `<div id="flight-hud"><span class="eyebrow" id="flight-label">FLIGHT TELEMETRY</span><strong id="pending">+0</strong><div id="trick">BUILD SPEED. FIND YOUR LINE.</div><div class="flight-metrics"><span>ALT <b id="altitude">0.0</b> M</span><span>AIR <b id="airtime">0.0</b> S</span><span id="combo">1×</span></div></div><div id="run-strip"><span id="run-time">00:00.0</span><div class="progress-track"><i id="run-progress"></i></div><span id="checkpoint">LAUNCH PAD</span></div><div id="pause-menu" hidden><div class="eyebrow">SIMULATION SUSPENDED</div><h2>TAKE A BREATH.</h2><button class="launch" id="resume">RESUME RUN</button><button class="small" id="restart">RESTART RUN</button></div></div>`);
-  document.body.insertAdjacentHTML('beforeend', `<div id="results" hidden><div class="result-card"><div class="eyebrow">TEST FLIGHT / COMPLETE</div><h2>VOID<br>CLEARED.</h2><div class="result-stats" id="result-stats"></div><button class="launch" id="again">RUN IT AGAIN <span>↗</span></button><button class="small" id="result-garage">BACK TO GARAGE</button></div></div>`);
-}
