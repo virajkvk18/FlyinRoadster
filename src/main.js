@@ -22,40 +22,80 @@ let mode='sprint',difficulty=0,carCount=3,profile=FLEET[0],assist=true,quality=t
 let world,body,vehicle,track,ready=false,active=false,paused=false,complete=false;
 let gas=100,score=0,combo=1,runTime=0,airTime=0,maxAir=0,peakSpeed=0,grounded=false,flight=false,contacts=0;
 let airLock=0,landStable=0,landingImpact=0,checkpoint=false,receiverLanded=false,launchTime=null,sprintTime=null,previousForwardSpeed=0;
-let hitParkedCar=false,boostCooldown=0;
+let hitParkedCar=false,boostCooldown=0,wingExtension=0;
 let countdown=0,throttle=0,steering=0,rollInput=0,pitchInput=0,yawInput=0,toastTimer=0,hudTimer=0,particleTimer=0,rollPeak=0;
 const rotation=V(),cameraDirection=V(0,0,-1),cameraTarget=V(),previousPosition=V(),previousRotation=new THREE.Quaternion();
 let records={};try{records=JSON.parse(localStorage.getItem('roadster-v3-records')||'{}')||{}}catch{}
 const recordKey=()=>mode+':'+profile.name+(mode==='ramp'?':'+difficulty:mode==='carjump'?':'+carCount:'');
 
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x020305);scene.fog=new THREE.FogExp2(0x020305,.0018);
-const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,1400);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x020306);scene.fog=new THREE.FogExp2(0x020306,.0014);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,1600);
 let renderer,composer,bloom,sun,tutorial;
-const particles=[];
+const particles=[],rocketFlames=[];
+
+// Soft glowing particle canvas
 const puffCanvas=document.createElement('canvas');puffCanvas.width=puffCanvas.height=32;const pc=puffCanvas.getContext('2d');
-const gradient=pc.createRadialGradient(16,16,0,16,16,16);gradient.addColorStop(0,'rgba(230,245,255,.8)');gradient.addColorStop(1,'rgba(230,245,255,0)');pc.fillStyle=gradient;pc.fillRect(0,0,32,32);const puffMap=new THREE.CanvasTexture(puffCanvas);
+const gradient=pc.createRadialGradient(16,16,0,16,16,16);gradient.addColorStop(0,'rgba(235,248,255,.95)');gradient.addColorStop(0.4,'rgba(0,240,255,.7)');gradient.addColorStop(1,'rgba(0,240,255,0)');pc.fillStyle=gradient;pc.fillRect(0,0,32,32);
+const puffMap=new THREE.CanvasTexture(puffCanvas);
+
+// Spark particle canvas
+const sparkCanvas=document.createElement('canvas');sparkCanvas.width=sparkCanvas.height=16;const sc=sparkCanvas.getContext('2d');
+const sGrad=sc.createRadialGradient(8,8,0,8,8,8);sGrad.addColorStop(0,'#ffffff');sGrad.addColorStop(0.5,'#00f5d4');sGrad.addColorStop(1,'rgba(0,245,212,0)');sc.fillStyle=sGrad;sc.fillRect(0,0,16,16);
+const sparkMap=new THREE.CanvasTexture(sparkCanvas);
 
 function initGraphics(){
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
   renderer.setSize(innerWidth,innerHeight);
   const maxDpr=matchMedia('(pointer: coarse)').matches?1.2:1.5;
   renderer.setPixelRatio(Math.min(devicePixelRatio,maxDpr));
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
   renderer.domElement.setAttribute('aria-label','3D stunt driving scene');document.body.prepend(renderer.domElement);
-  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();scene.environment=pmrem.fromScene(room,.04).texture;scene.environmentIntensity=.65;room.dispose();pmrem.dispose();
-  scene.add(new THREE.HemisphereLight(0xc7dbf3,0x16191f,1.5));
-  sun=new THREE.DirectionalLight(0xf0f6ff,3);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=25;sun.shadow.camera.bottom=-25;sun.shadow.camera.near=1;sun.shadow.camera.far=100;sun.shadow.normalBias=.025;sun.shadow.bias=-.00015;scene.add(sun,sun.target);
-  const rim=new THREE.DirectionalLight(0x859bbf,2);rim.position.set(-8,6,6);scene.add(rim);
+
+  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
+  scene.environment=pmrem.fromScene(room,.04).texture;scene.environmentIntensity=.85;
+  room.dispose();pmrem.dispose();
+
+  scene.add(new THREE.HemisphereLight(0x7ed4f7,0x0f141d,1.6));
+  sun=new THREE.DirectionalLight(0xf2f7ff,3.2);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
+  sun.shadow.camera.left=-28;sun.shadow.camera.right=28;sun.shadow.camera.top=28;sun.shadow.camera.bottom=-28;
+  sun.shadow.camera.near=1;sun.shadow.camera.far=110;sun.shadow.normalBias=.025;sun.shadow.bias=-.00015;
+  scene.add(sun,sun.target);
+
+  const rim=new THREE.DirectionalLight(0x00f0ff,2.2);rim.position.set(-9,7,6);scene.add(rim);
+  const bottomFill=new THREE.DirectionalLight(0x6b21a8,1.2);bottomFill.position.set(0,-10,0);scene.add(bottomFill);
+
   composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.24,.35,1.35);composer.addPass(bloom);composer.addPass(new OutputPass());
-  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();pauseGame();toast('Graphics paused. Reload the page to restore the renderer.',20);});
+  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.35,.45,1.2);
+  composer.addPass(bloom);composer.addPass(new OutputPass());
+
+  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();pauseGame();toast('Graphics paused. Reload page to restore.',20);});
 }
 
 function makeCar(){
   if(vehicle){scene.remove(vehicle.group);vehicle.dispose();world.removeRigidBody(body);}
   vehicle=createVehicle(profile);scene.add(vehicle.group);
-  body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(0,.68,18).setLinearDamping(.05).setAngularDamping(1.2).setCcdEnabled(true));
-  world.createCollider(RAPIER.ColliderDesc.cuboid(.86,.29,profile.length*.46).setMass(profile.mass).setFriction(.6).setRestitution(.02),body);
+  body=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(0,.68,18).setLinearDamping(.05).setAngularDamping(1.3).setCcdEnabled(true));
+  world.createCollider(RAPIER.ColliderDesc.cuboid(.86,.29,profile.length*.46).setMass(profile.mass).setFriction(.65).setRestitution(.02),body);
+
+  // Setup dual 3D rocket jet flame meshes
+  rocketFlames.length=0;
+  const flameMat=new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false});
+  const coreMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false});
+  for(const thruster of vehicle.thrusters){
+    const flameGroup=new THREE.Group();
+    flameGroup.position.set(0,0,.08);
+    // Outer plasma cone
+    const outerConeGeo=new THREE.ConeGeometry(.17,1.4,16);outerConeGeo.rotateX(-Math.PI/2);outerConeGeo.translate(0,0,.7);
+    const outerCone=new THREE.Mesh(outerConeGeo,flameMat);
+    // Inner hot white core spike
+    const innerConeGeo=new THREE.ConeGeometry(.08,.9,12);innerConeGeo.rotateX(-Math.PI/2);innerConeGeo.translate(0,0,.45);
+    const innerCone=new THREE.Mesh(innerConeGeo,coreMat);
+    flameGroup.add(outerCone,innerCone);
+    flameGroup.scale.set(0.001,0.001,0.001);
+    thruster.group.add(flameGroup);
+    rocketFlames.push(flameGroup);
+  }
+
   reset();
 }
 
@@ -69,7 +109,7 @@ function clearParticles(){for(const a of particles){scene.remove(a.mesh);a.mesh.
 function reset(recover=false){
   if(!body)return;
   if(!recover){score=0;combo=1;runTime=0;maxAir=0;peakSpeed=0;checkpoint=false;receiverLanded=false;launchTime=null;sprintTime=null;hitParkedCar=false;}
-  complete=false;gas=100;airTime=0;flight=false;grounded=false;contacts=0;airLock=0;landStable=0;landingImpact=0;rollPeak=0;boostCooldown=0;
+  complete=false;gas=100;airTime=0;flight=false;grounded=false;contacts=0;airLock=0;landStable=0;landingImpact=0;rollPeak=0;boostCooldown=0;wingExtension=0;
   rotation.set(0,0,0);throttle=steering=pitchInput=rollInput=yawInput=0;previousForwardSpeed=0;
   input.clear();clearParticles();$('results').close();
 
@@ -94,7 +134,7 @@ function bestText(){
   if(mode==='carjump')return r.cleared?(r.carCount+' cars'):'--';
   return r.score.toLocaleString();
 }
-function saveRecord(extra={}){
+function saveRecord(){
   const key=recordKey(),r=records[key];
   let isBest=false;
   if(mode==='sprint'){
@@ -144,21 +184,27 @@ function menu(){
   reset();
 }
 
-function pauseGame(){
-  if(!active||complete||paused)return;
-  paused=true;input.clear();$('pause-menu').showModal();
-}
-function resume(){
-  paused=false;input.clear();$('pause-menu').close();audio.start();
-}
+function pauseGame(){if(!active||complete||paused)return;paused=true;input.clear();$('pause-menu').showModal();}
+function resume(){paused=false;input.clear();$('pause-menu').close();audio.start();}
 
-function emitPuff(local,direction){
-  if(particles.length>=80)return;
+// Particle emitters (Rocket sparks, cold-gas RCS puffs, wingtip streamers)
+function emitPuff(local,direction,isSpark=false){
+  if(particles.length>=100)return;
   const q=new THREE.Quaternion().copy(body.rotation());
-  const mesh=new THREE.Sprite(new THREE.SpriteMaterial({map:puffMap,color:0xddeeff,transparent:true,opacity:.6,depthWrite:false,blending:THREE.AdditiveBlending}));
+  const mat=new THREE.SpriteMaterial({
+    map:isSpark?sparkMap:puffMap,
+    color:isSpark?0x00f5d4:0xddeeff,
+    transparent:true,
+    opacity:isSpark?.95:.65,
+    depthWrite:false,
+    blending:THREE.AdditiveBlending
+  });
+  const mesh=new THREE.Sprite(mat);
   mesh.position.copy(local).applyQuaternion(q).add(body.translation());
-  mesh.scale.setScalar(.35);scene.add(mesh);
-  particles.push({mesh,velocity:direction.clone().applyQuaternion(q).multiplyScalar(9).addScaledVector(V().copy(body.linvel()),.3),life:.55});
+  mesh.scale.setScalar(isSpark?.25:.38);
+  scene.add(mesh);
+  const v=direction.clone().applyQuaternion(q).multiplyScalar(isSpark?12:8).addScaledVector(V().copy(body.linvel()),.3);
+  particles.push({mesh,velocity:v,life:isSpark?.35:.55,maxLife:isSpark?.35:.55});
 }
 
 function spawnInFront(type){
@@ -225,7 +271,7 @@ function step(dt){
   if(mode==='free'&&track&&track.boostPads){
     for(const pad of track.boostPads){
       if(position.distanceTo(pad.position)<pad.radius&&boostCooldown<=0){
-        body.applyImpulse(forward.clone().multiplyScalar(mass*24),true);
+        body.applyImpulse(forward.clone().multiplyScalar(mass*25),true);
         boostCooldown=1.0;
         audio.chime(true);
         toast('⚡ TURBO BOOST! ⚡',1.4);
@@ -249,7 +295,7 @@ function step(dt){
     if(isBraking){
       acceleration=Math.sign(throttle)*profile.power*2.2;
     }else{
-      const topSpeed=85; // ~306 km/h
+      const topSpeed=86; // ~310 km/h
       if((speed<topSpeed&&throttle>0)||(speed>-22&&throttle<0)){
         const powerCurve=Math.max(.22,1-Math.max(0,speed)/115);
         acceleration=throttle*profile.power*powerCurve;
@@ -311,8 +357,8 @@ function step(dt){
       airTime=0;rotation.set(0,0,0);gas=Math.min(100,gas+dt*10);
     }
   }else{
-    // Airborne Flight & Cold-Gas Thrusters
-    airTime+=dt;landStable=0;if(airTime>.14)flight=true;maxAir=Math.max(maxAir,airTime);
+    // --- "THE AIR THING": Full Airborne Thrusters, Glide Physics & RCS Controls ---
+    airTime+=dt;landStable=0;if(airTime>.12)flight=true;maxAir=Math.max(maxAir,airTime);
     const localAngular=angular.clone().applyQuaternion(q.clone().invert());
     rotation.addScaledVector(localAngular,dt);
     rollPeak=Math.max(rollPeak,Math.abs(rotation.z));
@@ -324,29 +370,53 @@ function step(dt){
     const boost=input.has('ShiftLeft','ShiftRight'),level=input.has('KeyF');
     const demand=Math.abs(pitchInput)+Math.abs(rollInput)+Math.abs(yawInput)+(boost?1:0)+(level?1:0);
 
+    // Aerodynamic Glide Authority: forward speed generates upward glide lift
+    const glideLift=Math.max(0,speed*0.16-pitchInput*4.0)*mass*0.09*dt;
+    body.applyImpulse(up.clone().multiplyScalar(glideLift),true);
+
     if(gas>0&&demand>.03){
-      const cost=dt*(9*(Math.abs(pitchInput)+Math.abs(rollInput)+Math.abs(yawInput))+(boost?20:0)+(level?9:0));
+      const cost=dt*(8.5*(Math.abs(pitchInput)+Math.abs(rollInput)+Math.abs(yawInput))+(boost?18:0)+(level?8:0));
       const factor=Math.min(1,gas/Math.max(.001,cost));gas=Math.max(0,gas-cost);
       const desired=V(pitchInput*2.8,yawInput*2.1,rollInput*4.0).multiplyScalar(profile.agility);
-      const responsiveness=assist?4.5:2.6;
+      const responsiveness=assist?4.6:2.7;
       const target=localAngular.clone();
       for(const axis of ['x','y','z'])if(assist||Math.abs(desired[axis])>.05)target[axis]=damp(target[axis],desired[axis],responsiveness*factor,dt);
       target.clampLength(0,6.5);
       body.setAngvel(target.applyQuaternion(q),true);
 
-      if(boost)body.applyImpulse(up.clone().multiplyScalar(mass*16*dt*factor),true);
+      // Boost: Powerful forward + upward jet rocket propulsion
+      if(boost){
+        body.applyImpulse(forward.clone().multiplyScalar(mass*22*dt*factor),true);
+        body.applyImpulse(up.clone().multiplyScalar(mass*17*dt*factor),true);
+      }
       if(level){
         const correction=up.clone().cross(V(0,1,0));
-        body.applyTorqueImpulse(correction.multiplyScalar(mass*6*dt*factor),true);
+        body.applyTorqueImpulse(correction.multiplyScalar(mass*6.5*dt*factor),true);
       }
+
       particleTimer+=dt;
-      if(particleTimer>.035){
+      if(particleTimer>.03){
         particleTimer=0;
-        if(boost){emitPuff(V(-.7,-.3,0),V(0,-1,0));emitPuff(V(.7,-.3,0),V(0,-1,0));}
-        else emitPuff(V(rollInput>0?.9:-.9,0,0),V(0,-1,0));
+        const halfL=profile.length*.42;
+        // Dual rocket plume sparks
+        if(boost){
+          emitPuff(V(-.42,.16,halfL),V(0,-.3,1),true);
+          emitPuff(V(.42,.16,halfL),V(0,-.3,1),true);
+        }
+        // Directional RCS Thruster reaction puffs
+        if(Math.abs(rollInput)>.15){
+          emitPuff(V(rollInput>0?.95:-.95,.2,-halfL*.5),V(0,rollInput>0?-1:1,0));
+          emitPuff(V(rollInput>0?-.95:.95,.2,halfL*.5),V(0,rollInput>0?1:-1,0));
+          audio.rcsPuff();
+        }
+        if(Math.abs(pitchInput)>.15){
+          emitPuff(V(0,.3,-halfL*.8),V(0,pitchInput>0?-1:1,0));
+          emitPuff(V(0,.3,halfL*.8),V(0,pitchInput>0?1:-1,0));
+          audio.rcsPuff();
+        }
       }
     }else if(assist){
-      body.setAngvel(angular.multiplyScalar(Math.exp(-2.1*dt)),true);
+      body.setAngvel(angular.multiplyScalar(Math.exp(-2.2*dt)),true);
     }
   }
 
@@ -354,8 +424,9 @@ function step(dt){
   if(input.jump){
     input.jump=false;
     if(grounded&&gas>=15){
-      body.applyImpulse(V(0,mass*(mode==='kickflip'?12:9.5),0),true);
+      body.applyImpulse(V(0,mass*(mode==='kickflip'?12:9.6),0),true);
       gas-=15;airLock=.3;grounded=false;airTime=0;rotation.set(0,0,0);
+      audio.rcsPuff();
     }
   }
 
@@ -406,7 +477,7 @@ function updateHUD(){
   $('best').textContent=bestText();
   $('gas-text').textContent=Math.round(gas)+'%';
   $('gas-bar').style.width=gas+'%';
-  $('gas-bar').style.background=gas<25?'#ff6654':'#c5f879';
+  $('gas-bar').style.background=gas<25?'#ff6654':'#00f0ff';
 
   $('timer').textContent=(sprintTime??runTime).toFixed(2);
   $('airtime').textContent=airTime.toFixed(1);
@@ -415,7 +486,7 @@ function updateHUD(){
   $('trick').textContent=stunt.label;
   $('stunt-panel').classList.toggle('visible',flight);
 
-  $('state').textContent=countdown>0?'PREPARE TO LAUNCH':paused?'PAUSED':grounded?'GROUND CONTACT':gas<1?'PRESSURE EMPTY':'AIRBORNE';
+  $('state').textContent=countdown>0?'PREPARE TO LAUNCH':paused?'PAUSED':grounded?'GROUND CONTACT':gas<1?'PRESSURE EMPTY':'AIRBORNE (THRUSTERS ARMED)';
   const modeData=MODES.find(m=>m.id===mode);
   $('mode-label').textContent=modeData?modeData.subtitle:'DRIVING LAB';
 
@@ -450,14 +521,34 @@ function render(now){
     vehicle.group.quaternion.slerpQuaternions(previousRotation,new THREE.Quaternion().copy(body.rotation()),alpha);
     const p=vehicle.group.position,velocity=V().copy(body.linvel()),speed=velocity.length();
 
+    // Deployable Aero Flight Wings Animation
+    const isAirborne=!grounded&&airTime>.08;
+    wingExtension=damp(wingExtension,isAirborne?1:0,7,dt);
+    if(vehicle.wings){
+      vehicle.wings.left.position.x=-.88-wingExtension*.5;
+      vehicle.wings.right.position.x=.88+wingExtension*.5;
+      vehicle.wings.left.rotation.z=wingExtension*.12;
+      vehicle.wings.right.rotation.z=-wingExtension*.12;
+    }
+
+    // Rocket Exhaust Jet Plume Animation
+    const isBoosting=input.has('ShiftLeft','ShiftRight')&&gas>0;
+    const flameScale=isBoosting?(1.5+Math.sin(now*.04)*.3):(throttle>.1?.5+Math.sin(now*.02)*.1:.001);
+    for(const flame of rocketFlames){
+      flame.scale.set(flameScale,flameScale,flameScale*1.4);
+    }
+
     if(active){
       if(grounded){
         const heading=V(0,0,-1).applyQuaternion(vehicle.group.quaternion);
         heading.y=0;
-        if(heading.lengthSq()>.01)cameraDirection.lerp(heading.normalize(),1-Math.exp(-dt*3.5)).normalize();
+        if(heading.lengthSq()>.01)cameraDirection.lerp(heading.normalize(),1-Math.exp(-dt*3.8)).normalize();
       }
-      const desired=camMode===1?p.clone().add(V(15,5.5,7)):camMode===2?p.clone().add(V(0,28,8)):p.clone().addScaledVector(cameraDirection,-9.5-Math.min(speed*.025,2)).add(V(0,3.7,0));
-      camera.position.lerp(desired,1-Math.exp(-dt*5));
+      // Camera distance and subtle high-speed shudder
+      const shakeAmt=isBoosting?.05:(speed>50?.02:0);
+      const shake=V((Math.random()-.5)*shakeAmt,(Math.random()-.5)*shakeAmt,(Math.random()-.5)*shakeAmt);
+      const desired=camMode===1?p.clone().add(V(15,5.5,7)):camMode===2?p.clone().add(V(0,28,8)):p.clone().addScaledVector(cameraDirection,-9.5-Math.min(speed*.025,2.5)).add(V(0,3.7,0)).add(shake);
+      camera.position.lerp(desired,1-Math.exp(-dt*5.5));
       cameraTarget.lerp(p.clone().add(V(0,.55,0)).addScaledVector(velocity,.08),1-Math.exp(-dt*8));
       camera.lookAt(cameraTarget);
     }else{
@@ -465,17 +556,24 @@ function render(now){
       camera.position.set(p.x+Math.sin(angle)*8,p.y+3.4,p.z+Math.cos(angle)*8);
       camera.lookAt(p.clone().add(V(0,.35,0)));
     }
-    camera.fov=damp(camera.fov,active?48+Math.min(speed*.18,12):44,3,dt);
+
+    // Dynamic FOV widening at high speeds & rocket burn
+    const targetFov=active?48+Math.min(speed*.2,14)+(isBoosting?6:0):44;
+    camera.fov=damp(camera.fov,targetFov,3,dt);
     camera.updateProjectionMatrix();
+
     sun.position.copy(p).add(V(9,20,10));sun.target.position.copy(p);
-    audio.update(speed*3.6,Math.max(0,throttle),active&&!paused&&!complete&&countdown===0,!grounded);
+    audio.update(speed*3.6,Math.max(0,throttle),active&&!paused&&!complete&&countdown===0,!grounded,isBoosting);
   }
+
+  if(track&&track.updateVisuals)track.updateVisuals(now*.001);
 
   if(!paused){
     for(let i=particles.length-1;i>=0;i--){
       const a=particles[i];a.life-=dt;a.mesh.position.addScaledVector(a.velocity,dt);
-      a.mesh.scale.setScalar(.35+(.55-a.life)*3);
-      a.mesh.material.opacity=Math.max(0,a.life);
+      const progress=1-(a.life/a.maxLife);
+      a.mesh.scale.setScalar(.3+(progress)*1.8);
+      a.mesh.material.opacity=Math.max(0,a.life/a.maxLife);
       if(a.life<=0){scene.remove(a.mesh);a.mesh.material.dispose();particles.splice(i,1);}
     }
     if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('toast').textContent='';}
@@ -586,7 +684,6 @@ try{
   ready=true;
   $('loading').remove();
   requestAnimationFrame(render);
-  // Auto-open skippable tutorial on first visit
   tutorial.firstVisit();
   window.__void={getState:()=>({mode,active,paused,complete,grounded,contacts,gas,score,runTime,sprintTime,position:{...body.translation()},velocity:{...body.linvel()},rendererCalls:renderer.info.render.calls}),reset:()=>reset()};
 }catch(error){
