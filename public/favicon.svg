@@ -1,1 +1,118 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#090e15"/><path d="M14 49 25 15h29l-4 10H33l-3 8h16l-3 9H27l-2 7Z" fill="#f3f5f7"/><path d="m40 48 11-14 5 18Z" fill="#ff6654"/><path d="m10 24 8-6m-10 16 8-6" stroke="#c5f879" stroke-width="3" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f18"/>
+      <stop offset="50%" stop-color="#03060b"/>
+      <stop offset="100%" stop-color="#010204"/>
+    </linearGradient>
+
+    <!-- Roadster Body Gradient -->
+    <linearGradient id="bodyGrad" x1="0%" y1="30%" x2="100%" y2="70%">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="40%" stop-color="#d3dbe5"/>
+      <stop offset="100%" stop-color="#7a889b"/>
+    </linearGradient>
+
+    <!-- Cockpit Glass Gradient -->
+    <linearGradient id="cockpitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5d4"/>
+      <stop offset="45%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+
+    <!-- Jet Thruster Fire -->
+    <linearGradient id="thrusterFire" x1="100%" y1="50%" x2="0%" y2="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="25%" stop-color="#00f0ff"/>
+      <stop offset="65%" stop-color="#ff3366"/>
+      <stop offset="100%" stop-color="rgba(255,51,102,0)"/>
+    </linearGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="flameGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="flameBlur"/>
+      <feComposite in="SourceGraphic" in2="flameBlur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base Frame -->
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="2.5"/>
+  <rect x="7" y="7" width="114" height="114" rx="27" fill="none" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.25"/>
+
+  <!-- High-Speed Vapor Streaks (Background Motion) -->
+  <path d="M 6 42 Q 35 40 60 42" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.35" stroke-linecap="round"/>
+  <path d="M 10 54 Q 30 52 48 54" stroke="#c5f879" stroke-width="2" stroke-opacity="0.45" stroke-linecap="round"/>
+  <path d="M 4 88 Q 30 87 52 88" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.25" stroke-linecap="round"/>
+
+  <!-- Thruster Exhaust Jet / Cold-Gas Boost Flame -->
+  <g filter="url(#flameGlow)">
+    <!-- Primary rocket plume -->
+    <path d="M 28 73 C 12 73 0 71 0 71 C 0 71 12 67 28 67 Z" fill="url(#thrusterFire)"/>
+    <!-- Plasma core -->
+    <polygon points="28,71.5 8,70 28,68.5" fill="#ffffff" opacity="0.9"/>
+  </g>
+
+  <!-- Wing Aero Elements / Jet Fin -->
+  <path d="M 25 58 L 42 58 L 36 67 L 22 67 Z" fill="#ff4458" opacity="0.95"/>
+  <path d="M 26 56 L 40 56" stroke="#ff7b89" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Roadster Body Silhouette -->
+  <!-- Low, aggressive aerodynamic supercar profile -->
+  <path d="M 26 73 
+           L 32 64 
+           L 46 63 
+           L 60 48 
+           L 86 48 
+           L 104 63 
+           L 118 69 
+           C 122 71 124 75 120 78 
+           L 112 80 
+           L 102 80 
+           C 98 73 88 73 84 80 
+           L 50 80 
+           C 46 73 36 73 32 80 
+           L 24 79 
+           C 20 78 21 73 26 73 Z" 
+        fill="url(#bodyGrad)" 
+        stroke="#ffffff" 
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+
+  <!-- Cockpit Canopy / Aerodynamic Windshield -->
+  <path d="M 62 50 
+           L 84 50 
+           L 98 62 
+           L 54 62 Z" 
+        fill="url(#cockpitGrad)"/>
+
+  <!-- Cockpit Highlight / Reflection -->
+  <path d="M 65 52 L 80 52 L 72 60 L 58 60 Z" fill="#ffffff" opacity="0.35"/>
+
+  <!-- Headlight Laser / Cyberpunk Beam -->
+  <polygon points="116,68 126,71 114,73" fill="#c5f879" filter="url(#neonGlow)"/>
+  <line x1="117" y1="70" x2="128" y2="71" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Underglow / Ground Effect Neon -->
+  <ellipse cx="68" cy="85" rx="42" ry="3" fill="#00f5d4" opacity="0.55" filter="url(#neonGlow)"/>
+
+  <!-- Wheels / Mag Alloy Rims -->
+  <!-- Rear Wheel -->
+  <circle cx="41" cy="79" r="10" fill="#0b0f14" stroke="#475569" stroke-width="2.5"/>
+  <circle cx="41" cy="79" r="6" fill="#1e293b"/>
+  <circle cx="41" cy="79" r="2.5" fill="#c5f879" filter="url(#neonGlow)"/>
+
+  <!-- Front Wheel -->
+  <circle cx="93" cy="79" r="10" fill="#0b0f14" stroke="#475569" stroke-width="2.5"/>
+  <circle cx="93" cy="79" r="6" fill="#1e293b"/>
+  <circle cx="93" cy="79" r="2.5" fill="#c5f879" filter="url(#neonGlow)"/>
+
+  <!-- Aerodynamic Accent Lines -->
+  <path d="M 48 68 L 78 68 L 86 73 L 42 73 Z" fill="#111827" opacity="0.6"/>
+  <line x1="44" y1="67" x2="82" y2="67" stroke="#38bdf8" stroke-width="1.2" opacity="0.8"/>
+</svg>
