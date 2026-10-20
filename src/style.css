@@ -254,3 +254,35 @@ body.cinema #title .tbottom{display:none}
   #coins i{width:18px;height:18px}
   #bestline{font-size:10px;max-width:180px}
 }
+
+/* ── Desktop Controls in Bottom Right ── */
+#desktop-controls{position:absolute;right:clamp(14px,2.5vw,36px);bottom:calc(env(safe-area-inset-bottom) + 18px);background:rgba(8,12,24,.82);border:1px solid rgba(40,224,255,.35);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);box-shadow:0 4px 20px rgba(0,0,0,.6),inset 0 0 12px rgba(40,224,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:10px 14px;z-index:4;pointer-events:none;display:none;flex-direction:column;gap:6px;min-width:210px}
+body.playing #desktop-controls{display:flex}
+body.intro #desktop-controls,body.cine #desktop-controls{display:none!important}
+.dc-header{display:flex;align-items:center;gap:6px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.1)}
+.dc-dot{width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c)}
+.dc-title{font:800 10px var(--h);letter-spacing:.18em;color:var(--c)}
+.dc-grid{display:flex;flex-direction:column;gap:4px}
+.dc-item{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dc-keys{display:flex;align-items:center;gap:3px;font:700 9px var(--h)}
+.dc-keys kbd{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:3px;padding:2px 5px;font:inherit;color:#fff;line-height:1}
+.dc-keys kbd.dc-space{padding:2px 8px;border-color:rgba(40,224,255,.6);color:#a8f0ff;box-shadow:0 0 6px rgba(40,224,255,.4)}
+.dc-or{font:500 9px var(--t);color:#7f8ca6}
+.dc-action{font:600 11.5px var(--t);color:#cdd6e4;letter-spacing:.02em}
+.dc-tank-row{margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,255,255,.08)}
+.dc-tank-label{font:700 9px var(--h);letter-spacing:.1em;color:#8fa0c0;margin-bottom:3px}
+.dc-tank-track{height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden}
+.dc-tank-fill{height:100%;width:var(--t,100%);background:linear-gradient(90deg,#ff2d3a 0%,#ffc83a 35%,var(--c) 70%);border-radius:3px;transition:width .08s linear}
+
+/* Web Browser View (Desktop / pointer: fine): hide touch pad and hint, show bottom-right controls */
+@media (pointer:fine){
+  #pad{display:none!important}
+  #hint{display:none!important}
+  body.playing #desktop-controls{display:flex!important}
+}
+
+/* Phone / Mobile View (Touch / pointer: coarse): hide desktop controls, show touch pad */
+@media (pointer:coarse){
+  #desktop-controls{display:none!important}
+  body.playing #pad{display:flex!important}
+}
