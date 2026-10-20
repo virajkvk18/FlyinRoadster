@@ -40,6 +40,7 @@
       </div>
     </div>
     <div id="center">
+      <div id="mode-badge">🚀 MARS FLIGHT</div>
       <div id="prog">
         <div id="progf"></div>
         <div id="progcar"></div>
@@ -89,14 +90,17 @@
   <div id="pad">
     <button data-k="left" class="pb side" aria-label="left">
       <svg viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <small class="k-kbd">A / ◀</small>
     </button>
     <button data-k="jet" class="pb jet" aria-label="fly">
       <div id="tank"></div>
       <svg viewBox="0 0 24 24"><path d="M12 2c3 3 4.5 6.5 4.5 10.5L14 15h-4l-2.5-2.5C7.5 8.5 9 5 12 2z" fill="currentColor"/><circle cx="12" cy="9" r="1.8" fill="#0a2a3a"/><path d="M10 16.5c0 2.5 1 4 2 5.5 1-1.5 2-3 2-5.5z" fill="#ffb040"/></svg>
       <em>FLY</em>
+      <small class="k-kbd">SPACE</small>
     </button>
     <button data-k="right" class="pb side" aria-label="right">
       <svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <small class="k-kbd">D / ▶</small>
     </button>
   </div>
   <div id="skip" class="hide">TAP TO SKIP</div>
@@ -113,6 +117,41 @@
     <div class="tbottom">
       <div id="chal" class="hide"></div>
       <div id="t-best"></div>
+      
+      <!-- Unique Mode Selector -->
+      <div class="mode-select">
+        <div class="mode-label">SELECT MISSION MODE</div>
+        <div class="mode-grid">
+          <button class="mode-card on" data-mode="mars" type="button">
+            <div class="mc-icon">🚀</div>
+            <div class="mc-info"><b>MARS</b></div>
+          </button>
+          <button class="mode-card" data-mode="megaramp" type="button">
+            <div class="mc-icon">🛹</div>
+            <div class="mc-info"><b>RAMP</b></div>
+          </button>
+          <button class="mode-card" data-mode="carjump" type="button">
+            <div class="mc-icon">🚗</div>
+            <div class="mc-info"><b>CAR JUMP</b></div>
+          </button>
+          <button class="mode-card" data-mode="free" type="button">
+            <div class="mc-icon">🌐</div>
+            <div class="mc-info"><b>FREE ROAM</b></div>
+          </button>
+          <button class="mode-card" data-mode="sprint" type="button">
+            <div class="mc-icon">⚡</div>
+            <div class="mc-info"><b>0–60</b></div>
+          </button>
+        </div>
+        <div id="car-jump-stepper" class="stepper-row hide">
+          <span>PARKED CARS:</span>
+          <div class="stepper">
+            <button id="b-car-minus" type="button">−</button>
+            <b id="car-count-num">5</b>
+            <button id="b-car-plus" type="button">+</button>
+          </div>
+        </div>
+      </div>
       <button id="b-start" class="cta"><span>START ENGINE</span></button>
       <div class="row2">
         <button id="b-rank" class="ghost">
@@ -209,6 +248,7 @@
   <div id="pausebox" class="ov hide">
     <h2>PAUSED</h2>
     <button id="b-resume" class="cta"><span>RESUME</span></button>
+    <button id="b-restart" class="ghost"><span>RESTART [R]</span></button>
     <button id="b-quit" class="link">MAIN MENU</button>
   </div>
   <div id="cc-tip" class="hide"></div>
