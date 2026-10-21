@@ -41,7 +41,8 @@ export function updateStartButton() {
     if (startBtnIcon) startBtnIcon.textContent = curCfg.icon;
   } else {
     const MODE_TITLES = {
-      megaramp: 'START MEGA RAMP',
+      megastunt: 'START MEGA RAMPS & LOOP',
+      megaramp: 'START MEGA RAMPS & LOOP',
       carjump: `START CAR JUMP (${window.carJumpCount})`,
       free: 'ENTER FREE ROAM',
       sprint: 'START 0–60 SPRINT'
@@ -190,14 +191,16 @@ function setupModeSelector() {
   const descElem = document.querySelector('#title .logo p');
 
   const STUNT_DESCS = {
-    megaramp: 'Launch off the <b>MEGA VERT RAMP</b> into the void & stick the landing',
+    megastunt: 'Launch off <b>COLOSSAL MEGA RAMPS</b> & conquer the <b>360° CIRCULAR LOOP</b> with Shift Nitro Boosters!',
+    megaramp: 'Launch off <b>COLOSSAL MEGA RAMPS</b> & conquer the <b>360° CIRCULAR LOOP</b> with Shift Nitro Boosters!',
     carjump: 'Clear the parked car lineup with ramp boost & roof stomps',
     free: '<b>FREE ROAM</b>: Endless open stunt park with infinite cold-gas thrusters',
     sprint: '<b>0–60 SPRINT</b>: Drag strip acceleration telemetry'
   };
 
   const STUNT_BADGES = {
-    megaramp: '🛹 MEGA RAMP',
+    megastunt: '🎢 MEGA RAMPS & LOOP',
+    megaramp: '🎢 MEGA RAMPS & LOOP',
     carjump: `🚗 CAR JUMP (${window.carJumpCount})`,
     free: '🌐 FREE ROAM',
     sprint: '⚡ 0–60 SPRINT'
@@ -219,8 +222,8 @@ function setupModeSelector() {
     tabCampaign?.classList.remove('on');
     stuntView?.classList.remove('hide');
     campaignView?.classList.add('hide');
-    if (window.selectedMode === 'campaign') {
-      window.selectedMode = 'megaramp';
+    if (window.selectedMode === 'campaign' || window.selectedMode === 'megaramp') {
+      window.selectedMode = 'megastunt';
     }
     modeCards.forEach(c => c.classList.toggle('on', c.dataset.mode === window.selectedMode));
     if (descElem && STUNT_DESCS[window.selectedMode]) descElem.innerHTML = STUNT_DESCS[window.selectedMode];
